@@ -79,8 +79,8 @@ function myFunction() {
       targetSheet.getRange((j * 32)+1, sourceData[0].length + 1, sourceData2.length, sourceData2[0].length).setValues(sourceData2)
       var sheets = SpreadsheetApp.openById(arraySourceSpreadsheetId[j]).getSheets()
       for (var i = 2; i < sheets.length; i++) {
-
-      var sheet = sheets[i];
+        try{
+          var sheet = sheets[i];
         var id = findCellIdByValue(sheet, "средний балл")
         var column_id = id.slice(0, -1);
         //Logger.log("Reading data from sheet: " + sheet.getName());
@@ -90,8 +90,9 @@ function myFunction() {
         targetSheet.getRange((j * 32)+1, i+4, 1, 1).setValue(sheet.getName());
         targetSheet.getRange((j * 32)+2, i+4, values.length, values[0].length).setValues(values);
         targetSheet.getRange((j * 32)+1, 1, 1, 1).setValue(listName)
-      // Get the data range (all data in the sheet)
-
+        }catch(err){
+          Logger.log(err)
+        }
       }
     }catch(err){
       Logger.log(err)
@@ -118,4 +119,5 @@ function findCellIdByValue(sheet, targetValue){
   Logger.log('Value not found');
   return 'Value not found';
 }
+
 ```
