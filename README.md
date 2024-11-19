@@ -70,28 +70,35 @@ function myFunction() {
   targetSheet.clear();
   // Get the source data
   for(var j = 0; j < arraySourceSpreadsheetId.length; j++){
-    const sourceSpreadsheet = SpreadsheetApp.openById(arraySourceSpreadsheetId[j]);
-    const sourceData = sourceSpreadsheet.getRange(sourceRangeFIO).getValues();
-    const sourceData2 = sourceSpreadsheet.getRange(sourceRangeData).getValues();
-    const listName = sourceSpreadsheet.getName()
-    targetSheet.getRange((j * 32)+1, 1, sourceData.length, sourceData[0].length).setValues(sourceData);
-    targetSheet.getRange((j * 32)+1, sourceData[0].length + 1, sourceData2.length, sourceData2[0].length).setValues(sourceData2)
-    var sheets = SpreadsheetApp.openById(arraySourceSpreadsheetId[j]).getSheets()
-    for (var i = 2; i < sheets.length; i++) {
+    try{
+      const sourceSpreadsheet = SpreadsheetApp.openById(arraySourceSpreadsheetId[j]);
+      const sourceData = sourceSpreadsheet.getRange(sourceRangeFIO).getValues();
+      const sourceData2 = sourceSpreadsheet.getRange(sourceRangeData).getValues();
+      const listName = sourceSpreadsheet.getName()
+      targetSheet.getRange((j * 32)+1, 1, sourceData.length, sourceData[0].length).setValues(sourceData);
+      targetSheet.getRange((j * 32)+1, sourceData[0].length + 1, sourceData2.length, sourceData2[0].length).setValues(sourceData2)
+      var sheets = SpreadsheetApp.openById(arraySourceSpreadsheetId[j]).getSheets()
+      for (var i = 2; i < sheets.length; i++) {
 
-    var sheet = sheets[i];
-    var id = findCellIdByValue(sheet, "средний балл")
-    var column_id = id.slice(0, -1);
-    Logger.log("Reading data from sheet: " + sheet.getName());
-    Logger.log("Reading data from sheet: " + id.slice(0, -1));
-    var values = sheet.getRange(column_id+"7:"+column_id+"37").getValues();
-    Logger.log(values)
-    targetSheet.getRange((j * 32)+1, i+4, 1, 1).setValue(sheet.getName());
-    targetSheet.getRange((j * 32)+2, i+4, values.length, values[0].length).setValues(values);
-    targetSheet.getRange((j * 32)+1, 1, 1, 1).setValue(listName)
-    // Get the data range (all data in the sheet)
+      var sheet = sheets[i];
+        var id = findCellIdByValue(sheet, "средний балл")
+        var column_id = id.slice(0, -1);
+        //Logger.log("Reading data from sheet: " + sheet.getName());
+        //Logger.log("Reading data from sheet: " + id.slice(0, -1));
+        var values = sheet.getRange(column_id+"7:"+column_id+"37").getValues();
+        //Logger.log(values)
+        targetSheet.getRange((j * 32)+1, i+4, 1, 1).setValue(sheet.getName());
+        targetSheet.getRange((j * 32)+2, i+4, values.length, values[0].length).setValues(values);
+        targetSheet.getRange((j * 32)+1, 1, 1, 1).setValue(listName)
+      // Get the data range (all data in the sheet)
 
+      }
+    }catch(err){
+      Logger.log(err)
     }
+
+    
+    
   }
 }
 function findCellIdByValue(sheet, targetValue){
@@ -103,7 +110,7 @@ function findCellIdByValue(sheet, targetValue){
       if (values[i][j] === targetValue) {
         // Found the value, return the address
         var cell = sheet.getRange(i + 1, j + 1); // +1 because arrays are 0-indexed
-        Logger.log('Cell Address: ' + cell.getA1Notation());
+        //Logger.log('Cell Address: ' + cell.getA1Notation());
         return cell.getA1Notation(); // Return cell address in A1 notation
       }
     }
@@ -111,5 +118,4 @@ function findCellIdByValue(sheet, targetValue){
   Logger.log('Value not found');
   return 'Value not found';
 }
-
 ```
